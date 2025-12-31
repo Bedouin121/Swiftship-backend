@@ -44,7 +44,7 @@ apiRouter.use('/billing', requireRole(['admin']), billingRoutes);
 apiRouter.use('/inventory', requireRole(['admin']), inventoryRoutes);
 
 // Vendor routes
-apiRouter.use('/orders', requireRole(['vendor']), orderRoutes);
+apiRouter.use('/orders', requireRole(['vendor', 'admin']), orderRoutes);
 apiRouter.use('/products', requireRole(['vendor']), productRoutes);
 apiRouter.use('/analytics', requireRole(['vendor']), analyticsRoutes);
 
