@@ -79,6 +79,7 @@ The frontend expects the API to be available at `http://localhost:4000/api`. Mak
 3. The frontend `.env` file has `VITE_API_BASE_URL=http://localhost:4000/api`
 4. For vendor routes, set `VITE_DEMO_VENDOR_ID` to a valid vendor ID (you'll get this from the seed script output)
 
+
 ## Project Structure
 
 ```
