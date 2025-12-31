@@ -15,7 +15,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
 
 router.post('/', async (req: AuthRequest, res: Response) => {
   try {
-    const { name, location, latitude, longitude, capacity, utilized } = req.body;
+    const { name, location, address, thana, district, latitude, longitude, capacity, utilized } = req.body;
 
     if (!name || !location || capacity === undefined) {
       return res.status(400).json({ message: 'Missing required fields' });
@@ -28,6 +28,11 @@ router.post('/', async (req: AuthRequest, res: Response) => {
       utilized: utilized || 0,
       status: 'active',
     };
+
+    // Add address details if provided
+    if (address) microhubData.address = address;
+    if (thana) microhubData.thana = thana;
+    if (district) microhubData.district = district;
 
     // Add coordinates if provided
     if (latitude !== undefined && longitude !== undefined) {
@@ -47,11 +52,14 @@ router.post('/', async (req: AuthRequest, res: Response) => {
 router.put('/:id', async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, location, latitude, longitude, capacity, status } = req.body;
+    const { name, location, address, thana, district, latitude, longitude, capacity, status } = req.body;
 
     const updateData: any = {};
     if (name) updateData.name = name;
     if (location) updateData.location = location;
+    if (address !== undefined) updateData.address = address;
+    if (thana !== undefined) updateData.thana = thana;
+    if (district !== undefined) updateData.district = district;
     if (latitude !== undefined) updateData.latitude = latitude;
     if (longitude !== undefined) updateData.longitude = longitude;
     if (capacity !== undefined) updateData.capacity = capacity;
@@ -66,6 +74,22 @@ router.put('/:id', async (req: AuthRequest, res: Response) => {
     res.json({ data: microhub });
   } catch (error) {
     res.status(500).json({ message: 'Failed to update microhub' });
+  }
+});
+
+router.delete('/:id', async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const microhub = await Microhub.findByIdAndDelete(id);
+
+    if (!microhub) {
+      return res.status(404).json({ message: 'Microhub not found' });
+    }
+
+    res.json({ message: 'Microhub deleted successfully', data: microhub });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete microhub' });
   }
 });
 
