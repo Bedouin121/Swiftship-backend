@@ -12,7 +12,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
     }
 
     const products = await Product.find({ 
-      vendorId: new mongoose.Types.ObjectId(req.vendorId) 
+      vendorId: req.vendorId 
     }).sort({ createdAt: -1 });
     
     res.json({ data: products });
@@ -40,7 +40,7 @@ router.post('/', async (req: AuthRequest, res: Response) => {
       price,
       stock,
       description,
-      vendorId: new mongoose.Types.ObjectId(req.vendorId),
+      vendorId: req.vendorId,
     });
 
     await product.save();
@@ -65,7 +65,7 @@ router.patch('/:id', async (req: AuthRequest, res: Response) => {
     const { name, sku, category, price, stock, description } = req.body;
 
     const product = await Product.findOneAndUpdate(
-      { _id: id, vendorId: new mongoose.Types.ObjectId(req.vendorId) },
+      { _id: id, vendorId: req.vendorId },
       { name, sku, category, price, stock, description },
       { new: true }
     );
@@ -90,7 +90,7 @@ router.delete('/:id', async (req: AuthRequest, res: Response) => {
 
     const product = await Product.findOneAndDelete({ 
       _id: id, 
-      vendorId: new mongoose.Types.ObjectId(req.vendorId) 
+      vendorId: req.vendorId 
     });
 
     if (!product) {
