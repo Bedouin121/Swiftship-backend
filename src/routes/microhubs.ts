@@ -15,19 +15,27 @@ router.get('/', async (req: AuthRequest, res: Response) => {
 
 router.post('/', async (req: AuthRequest, res: Response) => {
   try {
-    const { name, location, capacity, utilized } = req.body;
+    const { name, location, latitude, longitude, capacity, utilized } = req.body;
 
     if (!name || !location || capacity === undefined) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    const microhub = new Microhub({
+    const microhubData: any = {
       name,
       location,
       capacity,
       utilized: utilized || 0,
       status: 'active',
-    });
+    };
+
+    // Add coordinates if provided
+    if (latitude !== undefined && longitude !== undefined) {
+      microhubData.latitude = latitude;
+      microhubData.longitude = longitude;
+    }
+
+    const microhub = new Microhub(microhubData);
 
     await microhub.save();
     res.status(201).json({ data: microhub });
@@ -39,11 +47,13 @@ router.post('/', async (req: AuthRequest, res: Response) => {
 router.put('/:id', async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, location, capacity, status } = req.body;
+    const { name, location, latitude, longitude, capacity, status } = req.body;
 
     const updateData: any = {};
     if (name) updateData.name = name;
     if (location) updateData.location = location;
+    if (latitude !== undefined) updateData.latitude = latitude;
+    if (longitude !== undefined) updateData.longitude = longitude;
     if (capacity !== undefined) updateData.capacity = capacity;
     if (status) updateData.status = status;
 
