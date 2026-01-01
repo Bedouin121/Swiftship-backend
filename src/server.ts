@@ -16,6 +16,7 @@ import billingRoutes from './routes/billing';
 import fleetRoutes from './routes/fleet';
 import inventoryRoutes from './routes/inventory';
 import analyticsRoutes from './routes/analytics';
+import authRoutes from './routes/auth';
 
 dotenv.config();
 
@@ -33,6 +34,9 @@ app.get('/health', (req, res) => {
 
 // API Routes
 const apiRouter = express.Router();
+
+// Public auth routes (no role required)
+apiRouter.use('/auth', authRoutes);
 
 // Admin routes
 apiRouter.use('/dashboard', requireRole(['admin']), dashboardRoutes);
