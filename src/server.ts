@@ -17,6 +17,7 @@ import fleetRoutes from './routes/fleet';
 import inventoryRoutes from './routes/inventory';
 import analyticsRoutes from './routes/analytics';
 import authRoutes from './routes/auth';
+import shelfBookingRoutes from './routes/shelfBookings';
 
 dotenv.config();
 
@@ -42,7 +43,7 @@ apiRouter.use('/auth', authRoutes);
 apiRouter.use('/dashboard', requireRole(['admin']), dashboardRoutes);
 apiRouter.use('/vendors', requireRole(['admin']), vendorRoutes);
 apiRouter.use('/drivers', requireRole(['admin']), driverRoutes);
-apiRouter.use('/microhubs', requireRole(['admin']), microhubRoutes);
+apiRouter.use('/microhubs', requireRole(['admin', 'vendor']), microhubRoutes);
 apiRouter.use('/fleet', requireRole(['admin']), fleetRoutes);
 apiRouter.use('/billing', requireRole(['admin']), billingRoutes);
 apiRouter.use('/inventory', requireRole(['admin']), inventoryRoutes);
@@ -51,6 +52,7 @@ apiRouter.use('/inventory', requireRole(['admin']), inventoryRoutes);
 apiRouter.use('/orders', requireRole(['vendor', 'admin']), orderRoutes);
 apiRouter.use('/products', requireRole(['vendor']), productRoutes);
 apiRouter.use('/analytics', requireRole(['vendor']), analyticsRoutes);
+apiRouter.use('/shelf-bookings', requireRole(['vendor']), shelfBookingRoutes);
 
 app.use('/api', apiRouter);
 

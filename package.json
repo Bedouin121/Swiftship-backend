@@ -10,7 +10,8 @@
     "seed": "tsx src/scripts/seed.ts",
     "migrate:microhubs": "tsx src/scripts/migrateMicrohubs.ts",
     "add-coordinates": "tsx src/scripts/add-coordinates-to-microhubs.ts",
-    "create:demo-vendor": "tsx src/scripts/createDemoVendor.ts"
+    "create:demo-vendor": "tsx src/scripts/createDemoVendor.ts",
+    "check-microhubs": "tsx src/scripts/check-microhubs.ts"
   },
   "keywords": [],
   "author": "",

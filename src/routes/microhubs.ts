@@ -1,19 +1,24 @@
 import { Router, Response } from 'express';
-import { AuthRequest } from '../middleware/auth';
+import { AuthRequest, requireRole } from '../middleware/auth';
 import Microhub from '../models/Microhub';
 
 const router = Router();
 
+// GET route - accessible by both admin and vendor
 router.get('/', async (req: AuthRequest, res: Response) => {
   try {
+    console.log("Fetching microhubs, user role:", req.role);
     const microhubs = await Microhub.find().sort({ createdAt: -1 });
+    console.log(`Found ${microhubs.length} microhubs`);
     res.json({ data: microhubs });
   } catch (error) {
+    console.error("Error fetching microhubs:", error);
     res.status(500).json({ message: 'Failed to fetch microhubs' });
   }
 });
 
-router.post('/', async (req: AuthRequest, res: Response) => {
+// POST route - admin only
+router.post('/', requireRole(['admin']), async (req: AuthRequest, res: Response) => {
   try {
     const { name, location, address, thana, district, latitude, longitude, capacity, utilized } = req.body;
 
@@ -49,7 +54,8 @@ router.post('/', async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.put('/:id', async (req: AuthRequest, res: Response) => {
+// PUT route - admin only
+router.put('/:id', requireRole(['admin']), async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { name, location, address, thana, district, latitude, longitude, capacity, status } = req.body;
@@ -77,7 +83,8 @@ router.put('/:id', async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.delete('/:id', async (req: AuthRequest, res: Response) => {
+// DELETE route - admin only
+router.delete('/:id', requireRole(['admin']), async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
 
