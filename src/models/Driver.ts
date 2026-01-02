@@ -2,7 +2,21 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IDriver extends Document {
   name: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
   phone: string;
+  address?: string;
+  city?: string;
+  licenseNumber?: string;
+  vehicleType?: string;
+  vehicleModel?: string;
+  vehicleYear?: string;
+  vehiclePlateNumber?: string;
+  nidNumber?: string;
+  emergencyContact?: string;
+  emergencyPhone?: string;
   deliveries: number;
   rating: number;
   status: 'active' | 'pending' | 'inactive';
@@ -14,7 +28,21 @@ export interface IDriver extends Document {
 const DriverSchema = new Schema<IDriver>(
   {
     name: { type: String, required: true },
+    firstName: { type: String },
+    lastName: { type: String },
+    email: { type: String, unique: true, sparse: true },
+    password: { type: String },
     phone: { type: String, required: true },
+    address: { type: String },
+    city: { type: String },
+    licenseNumber: { type: String },
+    vehicleType: { type: String },
+    vehicleModel: { type: String },
+    vehicleYear: { type: String },
+    vehiclePlateNumber: { type: String },
+    nidNumber: { type: String },
+    emergencyContact: { type: String },
+    emergencyPhone: { type: String },
     deliveries: { type: Number, default: 0 },
     rating: { type: Number, default: 0, min: 0, max: 5 },
     status: { type: String, enum: ['active', 'pending', 'inactive'], default: 'pending' },
