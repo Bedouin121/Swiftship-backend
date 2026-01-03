@@ -272,6 +272,34 @@ router.post('/login', async (req: Request, res: Response) => {
           }
         }
       });
+    } else if (userType === 'admin') {
+      // Admin login with hardcoded credentials
+      if (email === 'admin@swiftshift.com' && password === 'admin123') {
+        const token = jwt.sign(
+          { 
+            adminId: 'admin', 
+            email: 'admin@swiftshift.com', 
+            role: 'admin' 
+          },
+          process.env.JWT_SECRET || 'your-secret-key',
+          { expiresIn: '24h' }
+        );
+
+        res.json({
+          message: 'Admin login successful',
+          data: {
+            token,
+            user: {
+              id: 'admin',
+              name: 'Admin User',
+              email: 'admin@swiftshift.com',
+              role: 'admin'
+            }
+          }
+        });
+      } else {
+        return res.status(401).json({ message: 'Invalid admin credentials' });
+      }
     } else {
       // Handle admin login or other user types
       res.status(400).json({ message: 'Invalid user type' });

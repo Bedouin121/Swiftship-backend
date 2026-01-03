@@ -12,6 +12,7 @@ export interface AuthRequest extends Request {
 interface JWTPayload {
   vendorId?: string;
   driverId?: string;
+  adminId?: string;
   email: string;
   role: Role;
 }
