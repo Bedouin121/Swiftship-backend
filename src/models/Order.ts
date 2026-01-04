@@ -5,7 +5,7 @@ export interface IOrder extends Document {
   phoneNumber: string;
   productsCount: number;
   total: number;
-  status: 'Pending' | 'Processing' | 'In Transit' | 'Delivered';
+  status: 'Waiting' | 'Pickup' | 'Delivering' | 'Completed';
   eta: string;
   placedAt?: Date;
   vendorId: mongoose.Types.ObjectId;
@@ -24,6 +24,10 @@ export interface IOrder extends Document {
       district?: string;
     };
   };
+  assignedDriverId?: mongoose.Types.ObjectId;
+  pickupOtp?: string;
+  deliveryOtp?: string;
+  distance?: number; // in kilometers
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,7 +38,7 @@ const OrderSchema = new Schema<IOrder>(
     phoneNumber: { type: String, required: true },
     productsCount: { type: Number, required: true, min: 1 },
     total: { type: Number, required: true, min: 0 },
-    status: { type: String, enum: ['Pending', 'Processing', 'In Transit', 'Delivered'], default: 'Pending' },
+    status: { type: String, enum: ['Waiting', 'Pickup', 'Delivering', 'Completed'], default: 'Waiting' },
     eta: { type: String, required: true },
     placedAt: { type: Date },
     vendorId: { type: Schema.Types.ObjectId, ref: 'Vendor', required: true },
@@ -44,6 +48,10 @@ const OrderSchema = new Schema<IOrder>(
     quantity: { type: Number, required: true, min: 1 },
     deliveryType: { type: String, enum: ['standard', 'express'], required: true },
     specifiedAddress: { type: String, required: true },
+    assignedDriverId: { type: Schema.Types.ObjectId, ref: 'Driver' },
+    pickupOtp: { type: String },
+    deliveryOtp: { type: String },
+    distance: { type: Number }, // in kilometers
     deliveryLocation: {
       coordinates: {
         type: [Number],

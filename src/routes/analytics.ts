@@ -6,8 +6,6 @@ import Product from '../models/Product';
 
 const router = Router();
 
-import mongoose from 'mongoose';
-
 router.get('/vendor/sales', async (req: AuthRequest, res: Response) => {
   try {
     if (!req.vendorId) {
@@ -94,8 +92,8 @@ router.get('/vendor/fulfillment', async (req: AuthRequest, res: Response) => {
         createdAt: { $gte: startOfDay, $lte: endOfDay },
       });
 
-      const fulfilled = orders.filter(o => o.status === 'Delivered').length;
-      const pending = orders.filter(o => o.status !== 'Delivered').length;
+      const fulfilled = orders.filter(o => o.status === 'Completed').length;
+      const pending = orders.filter(o => o.status !== 'Completed').length;
       
       days.push({
         day: dayName,

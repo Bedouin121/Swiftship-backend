@@ -42,14 +42,14 @@ apiRouter.use('/auth', authRoutes);
 // Admin routes
 apiRouter.use('/dashboard', requireRole(['admin']), dashboardRoutes);
 apiRouter.use('/vendors', requireRole(['admin']), vendorRoutes);
-apiRouter.use('/drivers', requireRole(['admin']), driverRoutes);
+apiRouter.use('/drivers', requireRole(['admin', 'driver']), driverRoutes);
 apiRouter.use('/microhubs', requireRole(['admin', 'vendor']), microhubRoutes);
 apiRouter.use('/fleet', requireRole(['admin']), fleetRoutes);
 apiRouter.use('/billing', requireRole(['admin']), billingRoutes);
 apiRouter.use('/inventory', requireRole(['admin']), inventoryRoutes);
 
-// Vendor routes
-apiRouter.use('/orders', requireRole(['vendor', 'admin']), orderRoutes);
+// Vendor and Driver routes
+apiRouter.use('/orders', requireRole(['vendor', 'admin', 'driver']), orderRoutes);
 apiRouter.use('/products', requireRole(['vendor']), productRoutes);
 apiRouter.use('/analytics', requireRole(['vendor']), analyticsRoutes);
 apiRouter.use('/shelf-bookings', requireRole(['vendor']), shelfBookingRoutes);

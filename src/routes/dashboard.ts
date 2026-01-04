@@ -16,7 +16,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
     const microhubs = await Microhub.countDocuments();
     
     const allOrders = await Order.find();
-    const deliveredOrders = allOrders.filter(o => o.status === 'Delivered');
+    const deliveredOrders = allOrders.filter(o => o.status === 'Completed');
     const averageDeliveryTimeHours = deliveredOrders.length > 0 ? 2.5 : 0;
     const successRate = deliveredOrders.length > 0 
       ? Math.round((deliveredOrders.length / allOrders.length) * 100) 

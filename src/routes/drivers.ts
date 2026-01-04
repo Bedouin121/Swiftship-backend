@@ -45,6 +45,23 @@ router.post('/approve/:id', async (req: AuthRequest, res: Response) => {
   }
 });
 
+router.get('/profile', async (req: AuthRequest, res: Response) => {
+  try {
+    if (req.role !== 'driver') {
+      return res.status(403).json({ message: 'Only drivers can access profile' });
+    }
+
+    const driver = await Driver.findById(req.driverId);
+    if (!driver) {
+      return res.status(404).json({ message: 'Driver not found' });
+    }
+
+    res.json({ data: driver });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch driver profile' });
+  }
+});
+
 router.post('/reject/:id', async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
