@@ -9,12 +9,13 @@ export interface IDriver extends Document {
   phone: string;
   address?: string;
   city?: string;
-  licenseNumber?: string;
+  licenseExpiry?: Date;
   vehicleType?: string;
   vehicleModel?: string;
   vehicleYear?: string;
   vehiclePlateNumber?: string;
-  nidNumber?: string;
+  nidImageUrl?: string;
+  drivingLicenseImageUrl?: string;
   emergencyContact?: string;
   emergencyPhone?: string;
   deliveries: number;
@@ -35,12 +36,13 @@ const DriverSchema = new Schema<IDriver>(
     phone: { type: String, required: true },
     address: { type: String },
     city: { type: String },
-    licenseNumber: { type: String },
+    licenseExpiry: { type: Date },
     vehicleType: { type: String },
     vehicleModel: { type: String },
     vehicleYear: { type: String },
     vehiclePlateNumber: { type: String },
-    nidNumber: { type: String },
+    nidImageUrl: { type: String },
+    drivingLicenseImageUrl: { type: String },
     emergencyContact: { type: String },
     emergencyPhone: { type: String },
     deliveries: { type: Number, default: 0 },

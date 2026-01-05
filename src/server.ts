@@ -1,6 +1,10 @@
+import dotenv from 'dotenv';
+
+// Configure dotenv FIRST before any other imports that might use env variables
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { connectDB } from './config/database';
 import { errorHandler } from './middleware/errorHandler';
 import { requireRole } from './middleware/auth';
@@ -18,8 +22,7 @@ import inventoryRoutes from './routes/inventory';
 import analyticsRoutes from './routes/analytics';
 import authRoutes from './routes/auth';
 import shelfBookingRoutes from './routes/shelfBookings';
-
-dotenv.config();
+import uploadRoutes from './routes/upload';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -38,6 +41,7 @@ const apiRouter = express.Router();
 
 // Public auth routes (no role required)
 apiRouter.use('/auth', authRoutes);
+apiRouter.use('/upload', uploadRoutes);
 
 // Admin routes
 apiRouter.use('/dashboard', requireRole(['admin']), dashboardRoutes);

@@ -14,8 +14,8 @@ export interface IVendor extends Document {
   registrationNumber: string;
   taxId: string;
   website?: string;
-  businessDescription: string;
-  nidNumber: string;
+  nidImageUrl: string;
+  tradeLicenseUrl: string;
   status: 'pending' | 'approved' | 'rejected';
   products: number;
   registeredAt?: Date;
@@ -38,8 +38,8 @@ const VendorSchema = new Schema<IVendor>(
     registrationNumber: { type: String, required: true },
     taxId: { type: String, required: true },
     website: { type: String, required: false },
-    businessDescription: { type: String, required: true },
-    nidNumber: { type: String, required: true, validate: { validator: (v: string) => /^\d{10}$/.test(v), message: 'NID Number must be exactly 10 digits' } },
+    nidImageUrl: { type: String, required: true },
+    tradeLicenseUrl: { type: String, required: true },
     status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
     products: { type: Number, default: 0 },
     registeredAt: { type: Date },

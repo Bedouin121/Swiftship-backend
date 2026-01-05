@@ -13,8 +13,8 @@ export interface IPendingVendor extends Document {
   registrationNumber: string;
   taxId: string;
   website?: string;
-  businessDescription: string;
-  nidNumber: string;
+  nidImageUrl: string;
+  tradeLicenseUrl: string;
   registeredAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -34,8 +34,8 @@ const PendingVendorSchema = new Schema<IPendingVendor>(
     registrationNumber: { type: String, required: true },
     taxId: { type: String, required: true },
     website: { type: String, required: false },
-    businessDescription: { type: String, required: true },
-    nidNumber: { type: String, required: true, validate: { validator: (v: string) => /^\d{10}$/.test(v), message: 'NID Number must be exactly 10 digits' } },
+    nidImageUrl: { type: String, required: true },
+    tradeLicenseUrl: { type: String, required: true },
     registeredAt: { type: Date },
   },
   { timestamps: true }

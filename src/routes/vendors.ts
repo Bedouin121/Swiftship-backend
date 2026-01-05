@@ -84,8 +84,8 @@ router.post('/approve/:id', async (req: AuthRequest, res: Response) => {
       registrationNumber: pendingVendor.registrationNumber,
       taxId: pendingVendor.taxId,
       website: pendingVendor.website,
-      businessDescription: pendingVendor.businessDescription,
-      nidNumber: pendingVendor.nidNumber,
+      nidImageUrl: pendingVendor.nidImageUrl,
+      tradeLicenseUrl: pendingVendor.tradeLicenseUrl,
       status: 'approved',
       registeredAt: new Date()
     });

@@ -26,27 +26,21 @@ router.post('/register/vendor', async (req: Request, res: Response) => {
       registrationNumber,
       taxId,
       website,
-      businessDescription,
-      nidNumber
+      nidImageUrl,
+      tradeLicenseUrl
     } = req.body;
 
     console.log('📝 Extracted fields:', {
       firstName, lastName, email, phone, address, city,
       companyName, businessType, registrationNumber, taxId,
-      website, businessDescription, nidNumber
+      website, nidImageUrl, tradeLicenseUrl
     });
 
     // Validate required fields
     if (!firstName || !lastName || !email || !phone || !password || !address || !city || 
-        !companyName || !businessType || !registrationNumber || !taxId || !businessDescription || !nidNumber) {
+        !companyName || !businessType || !registrationNumber || !taxId || !nidImageUrl || !tradeLicenseUrl) {
       console.log('❌ Missing required fields');
-      return res.status(400).json({ message: 'All required fields must be provided' });
-    }
-
-    // Validate NID number (exactly 10 digits)
-    if (!/^\d{10}$/.test(nidNumber)) {
-      console.log('❌ Invalid NID number format');
-      return res.status(400).json({ message: 'NID Number must be exactly 10 digits' });
+      return res.status(400).json({ message: 'All required fields must be provided, including NID image and Trade License' });
     }
 
     // Check if email already exists in PendingVendor or Vendor
@@ -79,8 +73,8 @@ router.post('/register/vendor', async (req: Request, res: Response) => {
       registrationNumber,
       taxId,
       website: website || undefined,
-      businessDescription,
-      nidNumber
+      nidImageUrl,
+      tradeLicenseUrl
     });
 
     await pendingVendor.save();
@@ -114,8 +108,9 @@ router.post('/register/driver', async (req: Request, res: Response) => {
       password,
       address,
       city,
-      nidNumber,
-      drivingLicense,
+      nidImageUrl,
+      drivingLicenseImageUrl,
+      licenseExpiry,
       vehicleType,
       vehicleNumber,
       vehicleModel,
@@ -126,16 +121,16 @@ router.post('/register/driver', async (req: Request, res: Response) => {
 
     console.log('📝 Extracted fields:', {
       firstName, lastName, email, phone, address, city,
-      nidNumber, drivingLicense, vehicleType, vehicleNumber,
+      nidImageUrl, drivingLicenseImageUrl, licenseExpiry, vehicleType, vehicleNumber,
       emergencyContact, emergencyPhone
     });
 
     // Validate required fields
     if (!firstName || !lastName || !email || !phone || !password || !address || !city || 
-        !nidNumber || !drivingLicense || !vehicleType || !vehicleNumber || 
+        !nidImageUrl || !drivingLicenseImageUrl || !licenseExpiry || !vehicleType || !vehicleNumber || 
         !emergencyContact || !emergencyPhone) {
       console.log('❌ Missing required fields');
-      return res.status(400).json({ message: 'All required fields must be provided' });
+      return res.status(400).json({ message: 'All required fields must be provided including NID image and Driving License image' });
     }
 
     // Check if email already exists
@@ -163,8 +158,9 @@ router.post('/register/driver', async (req: Request, res: Response) => {
       password: hashedPassword,
       address,
       city,
-      nidNumber,
-      licenseNumber: drivingLicense,
+      nidImageUrl,
+      drivingLicenseImageUrl,
+      licenseExpiry: new Date(licenseExpiry),
       vehicleType,
       vehiclePlateNumber: vehicleNumber,
       vehicleModel: vehicleModel || undefined,
