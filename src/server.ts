@@ -43,7 +43,6 @@ const apiRouter = express.Router();
 // Public auth routes (no role required)
 apiRouter.use('/auth', authRoutes);
 apiRouter.use('/upload', uploadRoutes);
-<<<<<<< HEAD
 
 // Public customer routes (no auth required)
 apiRouter.get('/orders/customer/:phoneNumber', async (req, res) => {
@@ -111,8 +110,6 @@ apiRouter.get('/orders/debug/phones', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch phone numbers' });
   }
 });
-=======
->>>>>>> f7a739754eadb7d941d39fbb9ce8f3a3cba4a09a
 
 // Admin routes
 apiRouter.use('/dashboard', requireRole(['admin']), dashboardRoutes);
