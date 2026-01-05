@@ -1,9 +1,14 @@
+import dotenv from 'dotenv';
+
+// Configure dotenv FIRST before any other imports that might use env variables
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { connectDB } from './config/database';
 import { errorHandler } from './middleware/errorHandler';
 import { requireRole } from './middleware/auth';
+import Order from './models/Order';
 
 // Routes
 import dashboardRoutes from './routes/dashboard';
@@ -18,8 +23,7 @@ import inventoryRoutes from './routes/inventory';
 import analyticsRoutes from './routes/analytics';
 import authRoutes from './routes/auth';
 import shelfBookingRoutes from './routes/shelfBookings';
-
-dotenv.config();
+import uploadRoutes from './routes/upload';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -38,6 +42,74 @@ const apiRouter = express.Router();
 
 // Public auth routes (no role required)
 apiRouter.use('/auth', authRoutes);
+apiRouter.use('/upload', uploadRoutes);
+
+// Public customer routes (no auth required)
+apiRouter.get('/orders/customer/:phoneNumber', async (req, res) => {
+  try {
+    const { phoneNumber } = req.params;
+    
+    console.log("🔍 Customer orders request for phone:", phoneNumber);
+    
+    if (!phoneNumber) {
+      return res.status(400).json({ message: 'Phone number is required' });
+    }
+
+    // Find all orders for this phone number
+    const orders = await Order.find({ 
+      phoneNumber: phoneNumber 
+    })
+    .sort({ createdAt: -1 })
+    .populate('productId', 'name')
+    .populate('destinationMicrohubId', 'name location address');
+
+    console.log("📊 Found orders count:", orders.length);
+    console.log("📋 Orders found:", orders.map((o: any) => ({ id: o._id, phone: o.phoneNumber, customer: o.customerName })));
+
+    // Transform orders to match the expected format
+    const transformedOrders = orders.map((order: any) => ({
+      _id: order._id,
+      customerName: order.customerName,
+      customerPhone: order.phoneNumber,
+      items: [{
+        name: order.productId ? order.productId.name : 'Unknown Product',
+        quantity: order.quantity
+      }],
+      deliveryType: order.deliveryType,
+      deliveryAddress: order.deliveryLocation?.address || order.specifiedAddress,
+      totalPrice: order.total,
+      status: order.status.toLowerCase(),
+      createdAt: order.placedAt || order.createdAt,
+      deliveryOtp: order.deliveryOtp
+    }));
+
+    console.log("✅ Sending transformed orders:", transformedOrders.length);
+    res.json({ data: transformedOrders });
+  } catch (error) {
+    console.error('❌ Failed to fetch customer orders:', error);
+    res.status(500).json({ message: 'Failed to fetch customer orders' });
+  }
+});
+
+// Debug endpoint
+apiRouter.get('/orders/debug/phones', async (req, res) => {
+  try {
+    const phones = await Order.distinct('phoneNumber');
+    console.log("📱 All phone numbers in database:", phones);
+    
+    // Also get some sample orders to see the format
+    const sampleOrders = await Order.find({}).limit(3).select('phoneNumber customerName');
+    console.log("📋 Sample orders:", sampleOrders);
+    
+    res.json({ 
+      phones,
+      sampleOrders: sampleOrders.map((o: any) => ({ phone: o.phoneNumber, customer: o.customerName }))
+    });
+  } catch (error) {
+    console.error('Failed to fetch phone numbers:', error);
+    res.status(500).json({ message: 'Failed to fetch phone numbers' });
+  }
+});
 
 // Admin routes
 apiRouter.use('/dashboard', requireRole(['admin']), dashboardRoutes);

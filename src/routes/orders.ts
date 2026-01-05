@@ -104,6 +104,10 @@ router.post('/', async (req: AuthRequest, res: Response) => {
     const total = product.price * quantity;
     const eta = deliveryType === 'express' ? '1-2 hours' : '3-5 hours';
 
+    // Generate pickup and delivery OTPs
+    const pickupOtp = generateOTP();
+    const deliveryOtp = generateOTP();
+
     // Create order
     const orderData: any = {
       customerName,
@@ -120,6 +124,8 @@ router.post('/', async (req: AuthRequest, res: Response) => {
       quantity,
       deliveryType,
       specifiedAddress,
+      pickupOtp,
+      deliveryOtp,
       deliveryLocation: {
         coordinates: deliveryLocation.coordinates,
         address: deliveryLocation.address
@@ -210,16 +216,12 @@ router.post('/:id/accept', async (req: AuthRequest, res: Response) => {
       }
     }
 
-    // Generate pickup OTP
-    const pickupOtp = generateOTP();
-
     // Update order
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       {
         status: 'Pickup',
         assignedDriverId: driverId,
-        pickupOtp,
         distance: distance || 0
       },
       { new: true }
@@ -308,9 +310,9 @@ router.post('/:id/complete', async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: 'Order is not in delivering state' });
     }
 
-    // Check for completion code "abc"
-    if (otp.toLowerCase() !== 'abc') {
-      return res.status(400).json({ message: 'Invalid completion code' });
+    // Check delivery OTP
+    if (otp.toUpperCase() !== order.deliveryOtp) {
+      return res.status(400).json({ message: 'Invalid delivery OTP' });
     }
 
     // Update order to completed state
