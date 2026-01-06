@@ -270,11 +270,11 @@ router.post('/login', async (req: Request, res: Response) => {
       });
     } else if (userType === 'admin') {
       // Admin login with hardcoded credentials
-      if (email === 'admin@swiftshift.com' && password === 'admin123') {
+      if (email === 'admin@gmail.com' && password === 'admin') {
         const token = jwt.sign(
           { 
             adminId: 'admin', 
-            email: 'admin@swiftshift.com', 
+            email: 'admin@gmail.com', 
             role: 'admin' 
           },
           process.env.JWT_SECRET || 'your-secret-key',
@@ -288,7 +288,7 @@ router.post('/login', async (req: Request, res: Response) => {
             user: {
               id: 'admin',
               name: 'Admin User',
-              email: 'admin@swiftshift.com',
+              email: 'admin@gmail.com',
               role: 'admin'
             }
           }
